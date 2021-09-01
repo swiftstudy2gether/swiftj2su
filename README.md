@@ -167,3 +167,93 @@ func solution(_ s:String) -> Int {
     return numint
 }
 ```
+4. 키패드... 너무 어려워서 거의 코드를 해석하는 수준으로 해버렸다 반성~
+```
+import Foundation
+
+func countKeypad(_ start: Int , _ dest: Int) -> Int {
+    // [ 1, 2,  3]
+    // [ 4, 5,  6]
+    // [ 7, 8,  9]
+    // [-1, 0, -2]
+    let keypad = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [-1, 0, -2]]
+    var startPos = [0, 0]
+    var destPos = [0, 0]
+
+    for i in 0..<4 {
+        for j in 0..<3 {
+            if keypad[i][j] == start {
+                startPos[0] = i
+                startPos[1] = j
+                //print("startPos\(startPos)")
+            }
+            if keypad[i][j] == dest {
+                destPos[0] = i
+                destPos[1] = j
+                //print("destPos\(destPos)")
+            }
+        }
+    }
+
+    var count = 0
+    for i in 0...1 {
+        
+        if(startPos[i] > destPos[i]){
+             count += startPos[i] - destPos[i]
+        }else{
+           count += destPos[i] - startPos[i]
+        }
+    }
+
+    return count
+}
+
+func solution(_ numbers:[Int], _ hand:String) -> String {
+    var LH = -1
+    var RH = -2
+    var result = ""
+
+    for n in numbers {
+        switch n {
+        case 1, 4, 7:
+            LH = n
+            result.append("L")
+            break
+
+        case 3, 6, 9:
+            RH = n
+            result.append("R")
+            break
+
+        default:
+            let countLH = countKeypad(LH, n)
+            let countRH = countKeypad(RH, n)
+            print("countLH\(countLH)")
+            print("countRH\(countRH)")
+            
+            if countLH == countRH {
+                if hand == "left" {
+                    LH = n
+                    result += "L"
+                } else {
+                    RH = n
+                    result += "R"
+                }
+                break
+            }
+
+            // 가까운 손으로 누름
+            if countLH < countRH {
+                LH = n
+                result += "L"
+            } else {
+                RH = n
+                result += "R"
+            }
+            break
+        }
+    }
+
+    return result
+}
+```
